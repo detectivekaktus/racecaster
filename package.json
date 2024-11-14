@@ -1,0 +1,19 @@
+{
+  "name": "racecaster",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "build": "npx tsc",
+    "dev": "npx ts-node src/index.ts",
+    "start": "node out/index.js"
+  },
+  "keywords": [],
+  "author": "Artiom Astashonak",
+  "license": "MIT",
+  "description": "",
+  "devDependencies": {
+    "@types/node": "^22.9.0",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.6.3"
+  }
+}
