@@ -4,7 +4,7 @@ import { join } from "path";
 
 import { Logger } from "./utils/logging";
 
-export const logger = new Logger() as Logger;
+export const logger = new Logger("server") as Logger;
 
 const PORT = 3000;
 const server = createServer((req, res) => {
