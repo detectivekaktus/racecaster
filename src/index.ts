@@ -4,7 +4,7 @@ import { join } from "path";
 
 import { Logger } from "./utils/logging";
 
-const logger = new Logger() as Logger;
+export const logger = new Logger() as Logger;
 
 const PORT = 3000;
 const server = createServer((req, res) => {
@@ -25,10 +25,24 @@ const server = createServer((req, res) => {
       });
     } break;
 
-    case '/canvas.js': {
+    case "/styles/style.css": {
+      logger.info("Serving CSS styles.");
+      
+      readFile(join(__dirname, "/styles/style.css"), (err, data) => {
+        if (err) {
+          res.writeHead(500, { "Content-Type": "text/plain" });
+          res.end("Internal Server Error");
+          return;
+        }
+        res.writeHead(200, { "Content-Type": "text/css" });
+        res.end(data);
+      });
+    } break;
+
+    case '/game.js': {
       logger.info("Serving game logic.");
 
-      readFile(join(__dirname, "canvas.js"), (err, data) => {
+      readFile(join(__dirname, "game.js"), (err, data) => {
         if (err) {
           res.writeHead(500, { "Content-Type": "text/plain" });
           res.end("Internal Server Error");

@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "build": "npx tsc && cp src/index.html out/index.html",
+    "build": "npx tsc && cp src/index.html out/index.html && mkdir -p out/styles && cp src/styles/style.css out/styles/style.css",
     "dev": "npx ts-node src/index.ts",
     "start": "npm run build && node out/index.js",
     "clean": "rm -r out/"
