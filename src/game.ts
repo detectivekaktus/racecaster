@@ -17,7 +17,8 @@ function game(deltaTime: number) {
   const width: number = Math.floor(canvas.width / PIXEL_SIZE);
   const height: number = Math.floor(canvas.height / PIXEL_SIZE);
 
-  if (heldKey == 'w') distance += 5;
+  if (keysHeld.has('w') && !keysHeld.has('s')) distance += 5;
+  if (keysHeld.has('s') && !keysHeld.has('w')) distance -= 5;
 
   for (let y = 0; y < height / 2; y++) {
     for (let x = 0; x < width; x++) {
@@ -56,21 +57,13 @@ function draw(timestamp: number) {
   if (play) requestAnimationFrame(draw);
 }
 
-let keyHeld = false;
-let heldKey: string = "";
-
+let keysHeld: Set<string> = new Set();
 document.addEventListener("keydown", (event) => {
-  if (!keyHeld) {
-    keyHeld = true;
-    heldKey = event.key;
-  }
+  keysHeld.add(event.key);
 });
 
 document.addEventListener("keyup", (event) => {
-  if (event.key == heldKey) {
-    keyHeld = false;
-    heldKey = "";
-  }
+  keysHeld.delete(event.key);
 })
 
 requestAnimationFrame(draw)
