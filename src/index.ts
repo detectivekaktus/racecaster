@@ -8,7 +8,7 @@ export const logger = new Logger("server") as Logger;
 
 const PORT = 3000;
 const server = createServer((req, res) => {
-  logger.info(`Got ${req.method} request. Processing...`);
+  logger.info(`Got ${req.method} request to ${req.url}. Processing...`);
 
   switch (req.url) {
     case '/': {
