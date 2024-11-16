@@ -17,18 +17,25 @@ function drawGame(deltaTime: number) {
 
   for (let y = 0; y < height / 2; y++) {
     for (let x = 0; x < width; x++) {
-      const leftGrass = canvas.width * 0.225;
-      const leftBoundary = leftGrass + canvas.width * 0.05;
-      const road = leftBoundary + canvas.width * 0.45;
-      const rightBoundary = road + canvas.width * 0.05;
-      const rightGrass = rightBoundary + canvas.width * 0.225;
+      const perspective = 0.2 + y / height * 2.5;
+      let roadWidth = 0.55 * perspective;
+      const roadBoundaryWidth = roadWidth * 0.1;
 
-      if (x * PIXEL_SIZE <= leftGrass) ctx.fillStyle = "green";
-      else if (x * PIXEL_SIZE <= leftBoundary && x * PIXEL_SIZE > leftGrass) ctx.fillStyle = "red";
-      else if (x * PIXEL_SIZE <= road && x * PIXEL_SIZE > leftBoundary) ctx.fillStyle = "gray";
-      else if (x * PIXEL_SIZE <= rightBoundary && x * PIXEL_SIZE > road) ctx.fillStyle = "red";
-      else if (x * PIXEL_SIZE <= rightGrass && x * PIXEL_SIZE > rightBoundary) ctx.fillStyle = "green";
-      ctx.fillRect(x * PIXEL_SIZE, canvas.height / 2 + y * PIXEL_SIZE, PIXEL_SIZE, PIXEL_SIZE);
+      roadWidth *= 0.5;
+
+      const leftGrass = (0.5 - roadWidth - roadBoundaryWidth) * canvas.width;
+      const leftClip = (0.5 - roadWidth) * canvas.width;
+      const rightClip = (0.5 + roadWidth) * canvas.width;
+      const rightGrass = (0.5 + roadWidth + roadBoundaryWidth) * canvas.width;
+
+      const pixelized_x = x * PIXEL_SIZE;
+      const pixelized_y = canvas.height / 2 + y * PIXEL_SIZE;
+      if      (pixelized_x >= 0 && pixelized_x <= leftGrass) ctx.fillStyle = "green";
+      else if (pixelized_x > leftGrass && pixelized_x <= leftClip) ctx.fillStyle = "red";
+      else if (pixelized_x > leftClip && pixelized_x < rightClip) ctx.fillStyle = "gray";
+      else if (pixelized_x >= rightClip && pixelized_x < rightGrass) ctx.fillStyle = "red";
+      else if (pixelized_x >= rightGrass) ctx.fillStyle = "green";
+      ctx.fillRect(pixelized_x, pixelized_y, PIXEL_SIZE, PIXEL_SIZE);
     }
   }
 }
