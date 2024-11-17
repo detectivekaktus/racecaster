@@ -3,8 +3,9 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "build": "npx tsc && cp src/index.html out/index.html && mkdir -p out/styles && cp src/styles/style.css out/styles/style.css",
-    "dev": "npx ts-node src/index.ts",
+    "build:server": "npx tsc --project tsconfig.server.json && cp src/index.html out/index.html && mkdir -p out/styles && cp src/styles/style.css out/styles/style.css",
+    "build:client": "npx tsc --project tsconfig.client.json",
+    "build": "npm run build:server && npm run build:client",
     "start": "npm run build && node out/index.js",
     "clean": "rm -r out/"
   },

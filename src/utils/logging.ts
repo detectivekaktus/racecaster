@@ -7,7 +7,7 @@ export class Logger {
 
   constructor(scope: string) {
     const date = new Date();
-    this.path = `logs/${date.getDay()}.${date.getMonth()}.${date.getFullYear()}`;
+    this.path = `logs/${date.getDate()}.${date.getMonth()}.${date.getFullYear()}`;
     this.scope = scope;
 
     if (!existsSync("logs")) mkdirSync("logs");
