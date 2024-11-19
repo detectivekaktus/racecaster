@@ -16,10 +16,11 @@ document.addEventListener("keydown", (event) => engine.keysHeld.add(event.key));
 document.addEventListener("keyup",   (event) => engine.keysHeld.delete(event.key));
 
 function update(timestamp: number) {
-    if (!engine.startTime) engine.startTime = timestamp;
-    const deltaTime = timestamp - engine.startTime;
-    engine.update(deltaTime);
-    if (engine.play) requestAnimationFrame(update);
+  const mils = timestamp / 1000;
+  if (!engine.startTime) engine.startTime = mils;
+  const deltaTime = mils - engine.startTime;
+  engine.update(deltaTime);
+  if (engine.play) requestAnimationFrame(update);
 }
 
 requestAnimationFrame(update);
