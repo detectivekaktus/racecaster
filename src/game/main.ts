@@ -15,10 +15,11 @@ const engine = new GameEngine(canvas,
 document.addEventListener("keydown", (event) => engine.keysHeld.add(event.key));
 document.addEventListener("keyup",   (event) => engine.keysHeld.delete(event.key));
 
-function update(timestamp: number) {
+function update(timestamp: DOMHighResTimeStamp) {
   const mils = timestamp / 1000;
   if (!engine.startTime) engine.startTime = mils;
   const deltaTime = mils - engine.startTime;
+  engine.startTime = mils;
   engine.update(deltaTime);
   if (engine.play) requestAnimationFrame(update);
 }

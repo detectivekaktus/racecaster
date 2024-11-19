@@ -44,7 +44,7 @@ export class GameEngine {
   }
 
   private onCreate() {
-    this.road.push({ curvature: 0.0, distance: 50.0 } as RoadPiece);
+    this.road.push({ curvature: 0.0, distance: 100.0 } as RoadPiece);
     this.road.push({ curvature: 0.0, distance: 200.0 } as RoadPiece);
     this.road.push({ curvature: 1.0, distance: 300.0 } as RoadPiece);
     this.road.push({ curvature: 0.5, distance: 200.0 } as RoadPiece);
@@ -52,18 +52,19 @@ export class GameEngine {
     this.road.push({ curvature: -1.0, distance: 400.0 } as RoadPiece);
     this.road.push({ curvature: 0.0, distance: 800.0 } as RoadPiece);
     this.computeTotalDistance();
+    console.log(this.totalDistance);
   }
 
   private computeTotalDistance() {
     let distance = 0;
-    for (let i = 0; i < this.road.length - 1; i++)
+    for (let i = 0; i < this.road.length; i++)
       distance += this.road[i].distance;
     this.totalDistance = distance;
   }
 
   private getCurrentRoadPiece() : number {
     let sum = 0;
-    for (let i = 0; i < this.road.length - 1; i++) {
+    for (let i = 0; i < this.road.length; i++) {
       sum += this.road[i].distance;
       if (this.distance <= sum) return i;
     }
@@ -85,7 +86,7 @@ export class GameEngine {
     const width: number = Math.floor(this.canvas.width / this.options.pixel_size);
     const height: number = Math.floor(this.canvas.height / this.options.pixel_size);
 
-    if (this.keysHeld.has('w')) this.distance += 5 * deltaTime;
+    if (this.keysHeld.has('w')) this.distance += 100 * deltaTime;
 
     for (let y = 0; y < height / 2; y++) {
       for (let x = 0; x < width; x++) {
