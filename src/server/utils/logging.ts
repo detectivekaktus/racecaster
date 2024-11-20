@@ -1,4 +1,5 @@
-import { existsSync, mkdirSync, promises } from "fs";
+import { existsSync, mkdirSync, promises, readdir, rmSync } from "fs";
+import { join } from "path";
 import { exit } from "process";
 
 export class Logger {
@@ -11,6 +12,18 @@ export class Logger {
     this.scope = scope;
 
     if (!existsSync("logs")) mkdirSync("logs");
+    else {
+      readdir("logs", (err: NodeJS.ErrnoException | null, files: string[]) => {
+        if (err) throw new Error("Couldn't read the content of log directory.");
+        // If no one creates a shit ton of files inside log directory
+        // just for fun, it won't take almost any time to boot up the
+        // application.
+        if (files.length > 2) {
+          for (let i = 0; i < files.length; i++) 
+            rmSync(join("logs", files[i]));
+        }
+      });
+    }
   }
 
   private async writeToFile(msg: string) {
