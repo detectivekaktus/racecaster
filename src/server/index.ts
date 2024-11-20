@@ -33,12 +33,12 @@ const server = createServer((req, res) => {
 
     case "/main": {
       logger.info("Serving game logic.");
-      serve(req, res, "game/main.js", "application/javascript");
+      serve(req, res, "../client/main.js", "application/javascript");
     } break;
 
     case "/game-engine": {
       logger.info("Serving game logic.");
-      serve(req, res, "game/game-engine.js", "application/javascript");
+      serve(req, res, "../client/game-engine.js", "application/javascript");
     } break;
 
     default: {

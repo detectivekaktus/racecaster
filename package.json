@@ -1,12 +1,12 @@
 {
   "name": "racecaster",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "main": "index.js",
   "scripts": {
-    "build:server": "npx tsc --project tsconfig.server.json && cp src/index.html out/index.html && mkdir -p out/styles && cp src/styles/style.css out/styles/style.css",
+    "build:server": "npx tsc --project tsconfig.server.json && cp src/server/index.html out/server/index.html && mkdir -p out/server/styles && cp src/server/styles/style.css out/server/styles/style.css",
     "build:client": "npx tsc --project tsconfig.client.json",
     "build": "npm run build:server && npm run build:client",
-    "start": "npm run build && node out/index.js",
+    "start": "npm run build && node out/server/index.js",
     "clean": "rm -r out/"
   },
   "keywords": [],
