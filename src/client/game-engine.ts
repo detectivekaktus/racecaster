@@ -21,6 +21,7 @@ export class GameEngine {
   public startTime: number;
   public play: boolean;
 
+  private speed: number;
   private distance: number;
   private totalDistance: number;
   private curvature: number;
@@ -38,6 +39,7 @@ export class GameEngine {
     this.play = true;
 
     this.road = [];
+    this.speed = 0;
     this.distance = 0;
     this.totalDistance = 0;
     this.curvature = 0;
@@ -69,35 +71,41 @@ export class GameEngine {
   }
 
   private getCurrentRoadPiece() : number {
-    let sum = 0;
-    for (let i = 0; i < this.road.length; i++) {
+    let sum = 0; for (let i = 0; i < this.road.length; i++) {
       sum += this.road[i].distance;
       if (this.distance <= sum) return i;
     }
-    return -1;
+    return 0;
   }
 
 // The core logic of the game is written by Javidx9
 // Here's a Github link to his implementation of the game logic in C++.
-// https://github.com/OneLoneCoder/Javidx9/blob/master/ConsoleGameEngine/SmallerProjects/OneLoneCoder_RetroArcadeRacer.cpp
+// https://github.com/OneLoneCoder/Javidx9/blob/master/ConsoleGameEngine/
+// SmallerProjects/OneLoneCoder_RetroArcadeRacer.cpp
 //
-// My implementation is based on his logic.
+// My implementation heavely relies on his logic.
   public update(deltaTime: number) {
     if (this.distance >= this.totalDistance) {
       this.distance = 0;
       return;
     }
 
-    const roadPieceIndex = this.getCurrentRoadPiece();
-    if (roadPieceIndex == -1) throw new Error("Couldn't get the road piece.");
-    const roadPiece = this.road[roadPieceIndex];
-    this.curvature += (roadPiece.curvature - this.curvature) * deltaTime;
+    if (this.keysHeld.has('w')) {
+      this.speed += 5 * deltaTime;
+      if (this.speed > 2) this.speed = 2;
+    }
+    else {
+      this.speed -= 2 * deltaTime;
+      if (this.speed < 0) this.speed = 0;
+    }
+    this.distance += (100 * this.speed) * deltaTime;
+
+    const roadPiece = this.road[this.getCurrentRoadPiece()];
+    this.curvature += (roadPiece.curvature - this.curvature) * deltaTime * this.speed;
 
     this.resizeCanvas();
     const width: number = Math.floor(this.canvas.width / this.options.pixel_size);
     const height: number = Math.floor(this.canvas.height / this.options.pixel_size);
-
-    if (this.keysHeld.has('w')) this.distance += 200 * deltaTime;
 
     for (let y = 0; y < height / 2; y++) {
       for (let x = 0; x < width; x++) {
