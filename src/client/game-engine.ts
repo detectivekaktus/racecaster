@@ -21,8 +21,9 @@ export class GameEngine {
   public startTime: number;
   public play: boolean;
 
-  private distance: number = 0;
-  private totalDistance: number = 0;
+  private distance: number;
+  private totalDistance: number;
+  private curvature: number;
   private road: RoadPiece[];
 
   constructor(canvas: HTMLCanvasElement, options: GameOptions) {
@@ -32,9 +33,15 @@ export class GameEngine {
     this.ctx = ctx;
     this.options = options;
     this.keysHeld = new Set();
+
     this.startTime = 0;
     this.play = true;
+
     this.road = [];
+    this.distance = 0;
+    this.totalDistance = 0;
+    this.curvature = 0;
+
     this.onCreate();
   }
 
@@ -45,14 +52,13 @@ export class GameEngine {
 
   private onCreate() {
     this.road.push({ curvature: 0.0, distance: 100.0 } as RoadPiece);
-    this.road.push({ curvature: 0.0, distance: 200.0 } as RoadPiece);
-    this.road.push({ curvature: 1.0, distance: 300.0 } as RoadPiece);
-    this.road.push({ curvature: 0.5, distance: 200.0 } as RoadPiece);
-    this.road.push({ curvature: -0.5, distance: 400.0 } as RoadPiece);
-    this.road.push({ curvature: -1.0, distance: 400.0 } as RoadPiece);
-    this.road.push({ curvature: 0.0, distance: 800.0 } as RoadPiece);
+    this.road.push({ curvature: 0.0, distance: 500.0 } as RoadPiece);
+    this.road.push({ curvature: 1.0, distance: 1000.0 } as RoadPiece);
+    this.road.push({ curvature: 0.5, distance: 500.0 } as RoadPiece);
+    this.road.push({ curvature: -0.5, distance: 250.0 } as RoadPiece);
+    this.road.push({ curvature: -1.0, distance: 500.0 } as RoadPiece);
+    this.road.push({ curvature: 0.0, distance: 1000.0 } as RoadPiece);
     this.computeTotalDistance();
-    console.log(this.totalDistance);
   }
 
   private computeTotalDistance() {
@@ -71,27 +77,33 @@ export class GameEngine {
     return -1;
   }
 
+// The core logic of the game is written by Javidx9
+// Here's a Github link to his implementation of the game logic in C++.
+// https://github.com/OneLoneCoder/Javidx9/blob/master/ConsoleGameEngine/SmallerProjects/OneLoneCoder_RetroArcadeRacer.cpp
+//
+// My implementation is based on his logic.
   public update(deltaTime: number) {
     if (this.distance >= this.totalDistance) {
-      alert("You completed the level.");
-      this.play = false;
+      this.distance = 0;
       return;
     }
 
     const roadPieceIndex = this.getCurrentRoadPiece();
     if (roadPieceIndex == -1) throw new Error("Couldn't get the road piece.");
     const roadPiece = this.road[roadPieceIndex];
+    this.curvature += (roadPiece.curvature - this.curvature) * deltaTime;
 
     this.resizeCanvas();
     const width: number = Math.floor(this.canvas.width / this.options.pixel_size);
     const height: number = Math.floor(this.canvas.height / this.options.pixel_size);
 
-    if (this.keysHeld.has('w')) this.distance += 100 * deltaTime;
+    if (this.keysHeld.has('w')) this.distance += 200 * deltaTime;
 
     for (let y = 0; y < height / 2; y++) {
       for (let x = 0; x < width; x++) {
-        const center = 0.5 + roadPiece.curvature;
         const perspective = 0.2 + y / height * 2.5;
+        const center = 0.5 + this.curvature * Math.pow(1 - perspective, 2);
+
         let roadWidth = 0.65 * perspective;
         const roadBoundaryWidth = roadWidth * 0.1;
         roadWidth *= 0.5;
