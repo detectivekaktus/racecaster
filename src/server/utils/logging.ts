@@ -8,7 +8,7 @@ export class Logger {
 
   constructor(scope: string) {
     const date = new Date();
-    this.path = `logs/${date.getDate()}.${date.getMonth()}.${date.getFullYear()}`;
+    this.path = `logs/serverlog_${date.getDate()}.${date.getMonth()}.${date.getFullYear()}.log`;
     this.scope = scope;
 
     if (!existsSync("logs")) mkdirSync("logs");
@@ -44,7 +44,7 @@ export class Logger {
   public info(msg: string) {
     const format = this.formatMsg(msg);
     this.writeToFile(format);
-    console.info(`${this.scope}: [INFO] ${format}`);
+    console.info(`${this.scope}: \x1b[32m[INFO]\x1b[0m ${format}`);
   }
 
   public warn(msg: string) {
