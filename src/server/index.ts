@@ -23,12 +23,22 @@ const server = createServer((req, res) => {
   switch (req.url) {
     case '/': {
       logger.info("Request hit home HTML page. Returning it.");
-      serve(req, res, "index.html", "text/html");
+      serve(req, res, "html/index.html", "text/html");
     } break;
 
-    case "/styles/style.css": {
-      logger.info("Request hit CSS styles. Returning them.");
-      serve(req, res, "styles/style.css", "text/css");
+    case "/game": {
+      logger.info("Request hit game HTML page. Returning it.");
+      serve(req, res, "html/game.html", "text/html");
+    } break;
+
+    case "/styles/index.css": {
+      logger.info("Request hit home CSS styles. Returning them.");
+      serve(req, res, "styles/index.css", "text/css");
+    } break;
+
+    case "/styles/game.css": {
+      logger.info("Request hit game CSS styles. Returning them.");
+      serve(req, res, "styles/game.css", "text/css");
     } break;
 
     case "/main": {
