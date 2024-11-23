@@ -17,12 +17,15 @@ export class GameEngine {
   readonly ctx: CanvasRenderingContext2D;
   readonly options: GameOptions;
   readonly carImg: HTMLImageElement;
+  readonly leftCarImg: HTMLImageElement;
+  readonly rightCarImg: HTMLImageElement;
   
   public keysHeld: Set<string>;
   public startTime: number;
   public play: boolean;
 
   private speed: number;
+  private direction: number;
   private distance: number;
   private totalDistance: number;
   private curvature: number;
@@ -41,11 +44,14 @@ export class GameEngine {
 
     this.road = [];
     this.speed = 0;
+    this.direction = 0;
     this.distance = 0;
     this.totalDistance = 0;
     this.curvature = 0;
 
     this.carImg = new Image();
+    this.leftCarImg = new Image();
+    this.rightCarImg = new Image();
 
     this.onCreate();
   }
@@ -57,6 +63,8 @@ export class GameEngine {
 
   private onCreate() {
     this.carImg.src = "car.png";
+    this.leftCarImg.src = "car_left.png";
+    this.rightCarImg.src = "car_right.png";
 
     this.road.push({ curvature: 0.0, distance: 100.0 } as RoadPiece);
     this.road.push({ curvature: 0.0, distance: 500.0 } as RoadPiece);
@@ -103,6 +111,10 @@ export class GameEngine {
       this.speed -= 2 * deltaTime;
       if (this.speed < 0) this.speed = 0;
     }
+    if      (this.keysHeld.has('a') && !this.keysHeld.has('d')) this.direction = -1;
+    else if (this.keysHeld.has('d') && !this.keysHeld.has('a')) this.direction = 1;
+    else this.direction = 0;
+
     this.distance += (100 * this.speed) * deltaTime;
 
     const roadPiece = this.road[this.getCurrentRoadPiece()];
@@ -144,10 +156,15 @@ export class GameEngine {
       }
     }
 
-    const carImgWidth = this.carImg.width / 2;
-    const carImgHeight = this.carImg.height / 2;
+    let car = this.carImg;
+    if      (this.direction == 1) car = this.rightCarImg;
+    else if (this.direction == -1) car = this.leftCarImg;
+
+    const carImgWidth = car.width / 2;
+    const carImgHeight = car.height / 2;
+
     this.ctx.drawImage(
-      this.carImg,
+      car,
       (this.canvas.width - carImgWidth) / 2,
       this.canvas.height - carImgWidth + this.options.pixel_size * 20,
       carImgWidth,
