@@ -16,6 +16,7 @@ export class GameEngine {
   readonly canvas: HTMLCanvasElement;
   readonly ctx: CanvasRenderingContext2D;
   readonly options: GameOptions;
+  readonly carImg: HTMLImageElement;
   
   public keysHeld: Set<string>;
   public startTime: number;
@@ -44,6 +45,8 @@ export class GameEngine {
     this.totalDistance = 0;
     this.curvature = 0;
 
+    this.carImg = new Image();
+
     this.onCreate();
   }
 
@@ -53,6 +56,8 @@ export class GameEngine {
   }
 
   private onCreate() {
+    this.carImg.src = "car.png";
+
     this.road.push({ curvature: 0.0, distance: 100.0 } as RoadPiece);
     this.road.push({ curvature: 0.0, distance: 500.0 } as RoadPiece);
     this.road.push({ curvature: 1.0, distance: 1000.0 } as RoadPiece);
@@ -138,5 +143,15 @@ export class GameEngine {
         this.ctx.fillRect(pixelized_x, pixelized_y, this.options.pixel_size, this.options.pixel_size);
       }
     }
+
+    const carImgWidth = this.carImg.width / 2;
+    const carImgHeight = this.carImg.height / 2;
+    this.ctx.drawImage(
+      this.carImg,
+      (this.canvas.width - carImgWidth) / 2,
+      this.canvas.height - carImgWidth + this.options.pixel_size * 20,
+      carImgWidth,
+      carImgHeight
+    );
   }
 }

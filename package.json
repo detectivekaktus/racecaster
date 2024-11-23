@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "main": "index.js",
   "scripts": {
-    "build:server": "npx tsc --project tsconfig.server.json && cp -r src/server/html out/server && cp -r src/server/styles/ out/server",
+    "build:server": "npx tsc --project tsconfig.server.json && cp -r src/server/html out/server && cp -r src/server/styles/ out/server && cp -r src/server/assets out/server",
     "build:client": "npx tsc --project tsconfig.client.json",
     "build": "npm run build:server && npm run build:client",
     "start": "npm run build && node out/server/index.js",

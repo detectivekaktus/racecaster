@@ -51,6 +51,11 @@ const server = createServer((req, res) => {
       serve(req, res, "../client/game-engine.js", "application/javascript");
     } break;
 
+    case "/car.png": {
+      logger.info("Request hit the car image. Returning it.");
+      serve(req, res, "assets/car.png", "image/png");
+    } break;
+
     default: {
       logger.error("No content found for the request. Aborting.");
       res.writeHead(404, { "Content-Type": "text/plain" });
