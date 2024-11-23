@@ -51,17 +51,17 @@ const server = createServer((req, res) => {
       serve(req, res, "../client/game-engine.js", "application/javascript");
     } break;
 
-    case "/car.png": {
+    case "/assets/car.png": {
       logger.info("Request hit the car image. Returning it.");
       serve(req, res, "assets/car.png", "image/png");
     } break;
 
-    case "/car_left.png": {
+    case "/assets/car_left.png": {
       logger.info("Request hit the left car image. Returning it.");
       serve(req, res, "assets/car_left.png", "image/png");
     } break;
 
-    case "/car_right.png": {
+    case "/assets/car_right.png": {
       logger.info("Request hit the right car image. Returning it.");
       serve(req, res, "assets/car_right.png", "image/png");
     } break;

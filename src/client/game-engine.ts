@@ -1,3 +1,40 @@
+class Car {
+  readonly backSprite: HTMLImageElement;
+  readonly leftSprite: HTMLImageElement;
+  readonly rightSprite: HTMLImageElement;
+
+  public speed: number;
+  public maxSpeed: number;
+  public direction: number;
+  public distance: number;
+  public curvature: number;
+  public targetCurvature: number;
+  public sprite: HTMLImageElement;
+
+  constructor(maxSpeed: number,) {
+    this.maxSpeed = maxSpeed;
+    this.speed = 0.0;
+    this.direction = 0;
+    this.distance = 0.0;
+    this.curvature = 0.0;
+    this.targetCurvature = 0.0;
+
+    this.backSprite = new Image();
+    this.backSprite.src = "assets/car.png";
+    this.leftSprite = new Image();
+    this.leftSprite.src = "assets/car_left.png";
+    this.rightSprite = new Image();
+    this.rightSprite.src = "assets/car_right.png";
+    this.sprite = this.backSprite;
+  }
+
+  public update() {
+    if (this.direction == 1) this.sprite = this.rightSprite;
+    else if (this.direction == -1) this.sprite = this.leftSprite;
+    else this.sprite = this.backSprite;
+  }
+}
+
 interface RoadPiece {
   curvature:  number;
   distance:   number;
@@ -16,20 +53,14 @@ export class GameEngine {
   readonly canvas: HTMLCanvasElement;
   readonly ctx: CanvasRenderingContext2D;
   readonly options: GameOptions;
-  readonly carImg: HTMLImageElement;
-  readonly leftCarImg: HTMLImageElement;
-  readonly rightCarImg: HTMLImageElement;
   
   public keysHeld: Set<string>;
   public startTime: number;
   public play: boolean;
 
-  private speed: number;
-  private direction: number;
-  private distance: number;
-  private totalDistance: number;
-  private curvature: number;
   private road: RoadPiece[];
+  private totalDistance: number;
+  private car: Car;
 
   constructor(canvas: HTMLCanvasElement, options: GameOptions) {
     this.canvas = canvas;
@@ -42,17 +73,10 @@ export class GameEngine {
     this.startTime = 0;
     this.play = true;
 
+    this.car = new Car(2.0);
+
     this.road = [];
-    this.speed = 0;
-    this.direction = 0;
-    this.distance = 0;
     this.totalDistance = 0;
-    this.curvature = 0;
-
-    this.carImg = new Image();
-    this.leftCarImg = new Image();
-    this.rightCarImg = new Image();
-
     this.onCreate();
   }
 
@@ -62,10 +86,6 @@ export class GameEngine {
   }
 
   private onCreate() {
-    this.carImg.src = "car.png";
-    this.leftCarImg.src = "car_left.png";
-    this.rightCarImg.src = "car_right.png";
-
     this.road.push({ curvature: 0.0, distance: 100.0 } as RoadPiece);
     this.road.push({ curvature: 0.0, distance: 500.0 } as RoadPiece);
     this.road.push({ curvature: 1.0, distance: 1000.0 } as RoadPiece);
@@ -86,7 +106,7 @@ export class GameEngine {
   private getCurrentRoadPiece() : number {
     let sum = 0; for (let i = 0; i < this.road.length; i++) {
       sum += this.road[i].distance;
-      if (this.distance <= sum) return i;
+      if (this.car.distance <= sum) return i;
     }
     return 0;
   }
@@ -98,27 +118,27 @@ export class GameEngine {
 //
 // My implementation heavely relies on his logic.
   public update(deltaTime: number) {
-    if (this.distance >= this.totalDistance) {
-      this.distance = 0;
+    if (this.car.distance >= this.totalDistance) {
+      this.car.distance = 0;
       return;
     }
 
     if (this.keysHeld.has('w')) {
-      this.speed += 5 * deltaTime;
-      if (this.speed > 2) this.speed = 2;
+      this.car.speed += 5 * deltaTime;
+      if (this.car.speed > 2) this.car.speed = 2;
     }
     else {
-      this.speed -= 2 * deltaTime;
-      if (this.speed < 0) this.speed = 0;
+      this.car.speed -= 2 * deltaTime;
+      if (this.car.speed < 0) this.car.speed = 0;
     }
-    if      (this.keysHeld.has('a') && !this.keysHeld.has('d')) this.direction = -1;
-    else if (this.keysHeld.has('d') && !this.keysHeld.has('a')) this.direction = 1;
-    else this.direction = 0;
+    if      (this.keysHeld.has('a') && !this.keysHeld.has('d')) this.car.direction = -1;
+    else if (this.keysHeld.has('d') && !this.keysHeld.has('a')) this.car.direction = 1;
+    else this.car.direction = 0;
 
-    this.distance += (100 * this.speed) * deltaTime;
+    this.car.distance += (100 * this.car.speed) * deltaTime;
 
     const roadPiece = this.road[this.getCurrentRoadPiece()];
-    this.curvature += (roadPiece.curvature - this.curvature) * deltaTime * this.speed;
+    this.car.curvature += (roadPiece.curvature - this.car.curvature) * deltaTime * this.car.speed;
 
     this.resizeCanvas();
     const width: number = Math.floor(this.canvas.width / this.options.pixel_size);
@@ -127,7 +147,7 @@ export class GameEngine {
     for (let y = 0; y < height / 2; y++) {
       for (let x = 0; x < width; x++) {
         const perspective = 0.2 + y / height * 2.5;
-        const center = 0.5 + this.curvature * Math.pow(1 - perspective, 2);
+        const center = 0.5 + this.car.curvature * Math.pow(1 - perspective, 2);
 
         let roadWidth = 0.65 * perspective;
         const roadBoundaryWidth = roadWidth * 0.1;
@@ -138,10 +158,10 @@ export class GameEngine {
         const rightClip = (center + roadWidth) * this.canvas.width;
         const rightGrass = (center + roadWidth + roadBoundaryWidth) * this.canvas.width;
 
-        const grassColor: string = Math.sin(20 * Math.pow(1 - perspective, 3) + this.distance * 0.1) > 0 ?
+        const grassColor: string = Math.sin(20 * Math.pow(1 - perspective, 3) + this.car.distance * 0.1) > 0 ?
           this.options.grass_color_var1 :
           this.options.grass_color_var2;
-        const clipColor: string = Math.sin(40 * Math.pow(1 - perspective, 3) + this.distance * 0.1) > 0 ?
+        const clipColor: string = Math.sin(40 * Math.pow(1 - perspective, 3) + this.car.distance * 0.1) > 0 ?
           this.options.clip_color_var1 :
           this.options.clip_color_var2;
 
@@ -156,13 +176,10 @@ export class GameEngine {
       }
     }
 
-    let car = this.carImg;
-    if      (this.direction == 1) car = this.rightCarImg;
-    else if (this.direction == -1) car = this.leftCarImg;
-
+    this.car.update();
+    const car = this.car.sprite;
     const carImgWidth = car.width / 2;
     const carImgHeight = car.height / 2;
-
     this.ctx.drawImage(
       car,
       (this.canvas.width - carImgWidth) / 2,
