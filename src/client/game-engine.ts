@@ -11,7 +11,7 @@ class Car {
   public targetCurvature: number;
   public sprite: HTMLImageElement;
 
-  constructor(maxSpeed: number,) {
+  constructor(maxSpeed: number, backSpritePath: string, leftSpritePath: string, rightSpritePath: string) {
     this.maxSpeed = maxSpeed;
     this.speed = 0.0;
     this.direction = 0;
@@ -20,11 +20,11 @@ class Car {
     this.targetCurvature = 0.0;
 
     this.backSprite = new Image();
-    this.backSprite.src = "assets/car.png";
+    this.backSprite.src = backSpritePath;
     this.leftSprite = new Image();
-    this.leftSprite.src = "assets/car_left.png";
+    this.leftSprite.src = leftSpritePath;
     this.rightSprite = new Image();
-    this.rightSprite.src = "assets/car_right.png";
+    this.rightSprite.src = rightSpritePath;
     this.sprite = this.backSprite;
   }
 
@@ -73,7 +73,7 @@ export class GameEngine {
     this.startTime = 0;
     this.play = true;
 
-    this.car = new Car(2.0);
+    this.car = new Car(2.0, "assets/car.png", "assets/car_left.png", "assets/car_right.png");
 
     this.road = [];
     this.totalDistance = 0;
