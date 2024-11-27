@@ -1,9 +1,14 @@
-import { GameEngine, GameOptions } from "./game-engine";
+import { GameEngine, GameOptions, Gradient } from "./game-engine";
 
 const canvas = document.getElementById("canvas") as HTMLCanvasElement;
 const engine = new GameEngine(canvas,
   {
     pixel_size:       5,
+    sky_gradient: {
+      color1: "#1c5564",
+      color2: "#579bab",
+      color3: "#9be5e9"
+    } as Gradient,
     grass_color_var1: "#6dc728",
     grass_color_var2: "#52ab0e",
     clip_color_var1:  "#e0e0e0",

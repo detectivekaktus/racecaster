@@ -1,3 +1,19 @@
+export interface Gradient {
+  color1: string;
+  color2: string;
+  color3: string;
+};
+
+export interface GameOptions {
+  pixel_size:       number
+  sky_gradient:     Gradient;
+  grass_color_var1: string;
+  grass_color_var2: string;
+  clip_color_var1:  string;
+  clip_color_var2:  string;
+  road_color:       string;
+};
+
 class Car {
   readonly backSprite: HTMLImageElement;
   readonly leftSprite: HTMLImageElement;
@@ -38,15 +54,6 @@ class Car {
 interface RoadPiece {
   curvature:  number;
   distance:   number;
-};
-
-export interface GameOptions {
-  pixel_size:       number
-  grass_color_var1: string;
-  grass_color_var2: string;
-  clip_color_var1:  string;
-  clip_color_var2:  string;
-  road_color:       string;
 };
 
 export class GameEngine {
@@ -112,6 +119,14 @@ export class GameEngine {
     return 0;
   }
 
+  private computeSkyGradient() : CanvasGradient {
+    const grad: CanvasGradient = this.ctx.createLinearGradient(this.canvas.width / 2, 0, this.canvas.width / 2, this.canvas.height / 2);
+    grad.addColorStop(0, this.options.sky_gradient.color1);
+    grad.addColorStop(0.5, this.options.sky_gradient.color2);
+    grad.addColorStop(1, this.options.sky_gradient.color3);
+    return grad;
+  }
+
 // The core logic of the game is written by Javidx9
 // Here's a Github link to his implementation of the game logic in C++.
 // https://github.com/OneLoneCoder/Javidx9/blob/master/ConsoleGameEngine/
@@ -148,6 +163,10 @@ export class GameEngine {
     this.resizeCanvas();
     const width: number = Math.floor(this.canvas.width / this.options.pixel_size);
     const height: number = Math.floor(this.canvas.height / this.options.pixel_size);
+
+    const grad = this.computeSkyGradient();
+    this.ctx.fillStyle = grad;
+    this.ctx.fillRect(0, 0, width * this.options.pixel_size, (height / 2) * this.options.pixel_size);
 
     for (let y = 0; y < height / 2; y++) {
       for (let x = 0; x < width; x++) {
