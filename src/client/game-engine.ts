@@ -68,6 +68,7 @@ export class GameEngine {
   private road: RoadPiece[];
   private totalDistance: number;
   private targetCurvature: number;
+  private accumulatedCurvature: number;
   private car: Car;
 
   constructor(canvas: HTMLCanvasElement, options: GameOptions) {
@@ -85,6 +86,7 @@ export class GameEngine {
     this.road = [];
     this.totalDistance = 0;
     this.targetCurvature = 0;
+    this.accumulatedCurvature = 0;
     this.onCreate();
   }
 
@@ -151,7 +153,7 @@ export class GameEngine {
     }
     else this.car.direction = 0;
 
-    if (Math.abs(this.targetCurvature - this.car.curvature) > 0.7) this.car.speed -= 10 * deltaTime;
+    if (Math.abs(this.accumulatedCurvature - this.car.curvature) > 0.7) this.car.speed -= 10 * deltaTime;
     if (this.car.speed > 2) this.car.speed = 2;
     if (this.car.speed < 0) this.car.speed = 0;
 
@@ -159,6 +161,7 @@ export class GameEngine {
 
     const roadPiece = this.road[this.getCurrentRoadPiece()];
     this.targetCurvature += (roadPiece.curvature - this.targetCurvature) * deltaTime * this.car.speed;
+    this.accumulatedCurvature += (roadPiece.curvature - this.car.curvature) * deltaTime * this.car.speed;
 
     this.resizeCanvas();
     const width: number = Math.floor(this.canvas.width / this.options.pixel_size);
@@ -202,7 +205,7 @@ export class GameEngine {
 
     this.car.update();
     const midPoint = 0.5 * this.canvas.width;
-    const carXPos = midPoint + midPoint * -(this.targetCurvature - this.car.curvature);
+    const carXPos = midPoint + midPoint * (this.car.curvature - this.accumulatedCurvature)
     const carSprite = this.car.sprite;
     const carWidth = carSprite.width / 2;
     const carHeight = carSprite.height / 2;
