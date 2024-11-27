@@ -96,13 +96,12 @@ export class GameEngine {
   }
 
   private onCreate() {
-    this.road.push({ curvature: 0.0, distance: 100.0 } as RoadPiece);
-    this.road.push({ curvature: 0.0, distance: 500.0 } as RoadPiece);
-    this.road.push({ curvature: 1.0, distance: 1000.0 } as RoadPiece);
-    this.road.push({ curvature: 0.5, distance: 500.0 } as RoadPiece);
-    this.road.push({ curvature: -0.5, distance: 250.0 } as RoadPiece);
-    this.road.push({ curvature: -1.0, distance: 500.0 } as RoadPiece);
-    this.road.push({ curvature: 0.0, distance: 1000.0 } as RoadPiece);
+    for (let i = 0; i < 15; i++) {
+      this.road.push({
+        curvature: Math.random() * 2 - 1,
+        distance:  Math.floor((Math.random() * 1000) + 300)
+      } as RoadPiece);
+    }
     this.computeTotalDistance();
   }
 
@@ -136,9 +135,10 @@ export class GameEngine {
 //
 // My implementation heavely relies on his logic.
   public update(deltaTime: number) {
+    const roadIndex = this.getCurrentRoadPiece();
     if (this.car.distance >= this.totalDistance) {
-      this.car.distance = 0;
-      return;
+      alert("You have finished the route. Do you want to try another one?");
+      location.reload();
     }
 
     if (this.keysHeld.has('w')) this.car.speed += 5 * deltaTime;
@@ -159,7 +159,7 @@ export class GameEngine {
 
     this.car.distance += (100 * this.car.speed) * deltaTime;
 
-    const roadPiece = this.road[this.getCurrentRoadPiece()];
+    const roadPiece = this.road[roadIndex]
     this.targetCurvature += (roadPiece.curvature - this.targetCurvature) * deltaTime * this.car.speed;
     this.accumulatedCurvature += (roadPiece.curvature - this.car.curvature) * deltaTime * this.car.speed;
 
