@@ -143,7 +143,7 @@ export class GameEngine {
     this.car.distance += (100 * this.car.speed) * deltaTime;
 
     const roadPiece = this.road[this.getCurrentRoadPiece()];
-    this.targetCurvature += (roadPiece.curvature - this.car.curvature) * deltaTime * this.car.speed;
+    this.targetCurvature += (roadPiece.curvature - this.targetCurvature) * deltaTime * this.car.speed;
 
     this.resizeCanvas();
     const width: number = Math.floor(this.canvas.width / this.options.pixel_size);
