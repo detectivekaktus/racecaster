@@ -31,6 +31,11 @@ const server = createServer((req, res) => {
       serve(req, res, "html/game.html", "text/html");
     } break;
 
+    case "/gameover": {
+      logger.info("Request hit gameover HTML page. Returning it.");
+      serve(req, res, "html/gameover.html", "text/html");
+    } break;
+
     case "/styles/index.css": {
       logger.info("Request hit home CSS styles. Returning them.");
       serve(req, res, "styles/index.css", "text/css");
@@ -40,6 +45,12 @@ const server = createServer((req, res) => {
       logger.info("Request hit game CSS styles. Returning them.");
       serve(req, res, "styles/game.css", "text/css");
     } break;
+
+    case "/styles/gameover.css": {
+      logger.info("Request hit gameover CSS styles. Returning them.");
+      serve(req, res, "styles/gameover.css", "text/css");
+    } break;
+
 
     case "/main": {
       logger.info("Request hit main game logic. Returning it.");

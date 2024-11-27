@@ -96,6 +96,11 @@ export class GameEngine {
   }
 
   private onCreate() {
+    this.road.push({
+      curvature: 0,
+      distance: 300
+    } as RoadPiece);
+
     for (let i = 0; i < 15; i++) {
       this.road.push({
         curvature: Math.random() * 2 - 1,
@@ -135,10 +140,9 @@ export class GameEngine {
 //
 // My implementation heavely relies on his logic.
   public update(deltaTime: number) {
-    const roadIndex = this.getCurrentRoadPiece();
     if (this.car.distance >= this.totalDistance) {
-      alert("You have finished the route. Do you want to try another one?");
-      location.reload();
+      if (confirm("You have finished the route. Do you want to try another one?")) location.reload();
+      else location.replace(`${location.origin}/gameover`);
     }
 
     if (this.keysHeld.has('w')) this.car.speed += 5 * deltaTime;
@@ -159,7 +163,7 @@ export class GameEngine {
 
     this.car.distance += (100 * this.car.speed) * deltaTime;
 
-    const roadPiece = this.road[roadIndex]
+    const roadPiece = this.road[this.getCurrentRoadPiece()]
     this.targetCurvature += (roadPiece.curvature - this.targetCurvature) * deltaTime * this.car.speed;
     this.accumulatedCurvature += (roadPiece.curvature - this.car.curvature) * deltaTime * this.car.speed;
 
