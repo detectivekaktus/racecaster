@@ -88,7 +88,6 @@ const server = createServer((req, res) => {
 const PORT = 3000;
 server.listen(PORT, () => {
   logger.info("Server is successfully hosted and is listening on 127.0.0.1:3000.");
-  logger.warn("  For more functioning info try using --debug flag.");
-  logger.warn("  If an error occurs, please follow the path `logs` and find the latest");
-  logger.warn("  log file and submit it on Github at https://github.com/detectivekaktus/racecaster");
+  logger.warn("If an error occurs, please follow the path `logs` and find the latest");
+  logger.warn("log file and submit it on Github at https://github.com/detectivekaktus/racecaster");
 });

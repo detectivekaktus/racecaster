@@ -6,13 +6,14 @@
     "build:server": "npx tsc --project tsconfig.server.json && cp -r src/server/html out/server && cp -r src/server/styles/ out/server && cp -r src/server/assets out/server",
     "build:client": "npx tsc --project tsconfig.client.json",
     "build": "npm run build:server && npm run build:client",
+    "run": "node out/server/index.js",
     "start": "npm run build && node out/server/index.js",
     "clean": "rm -r out/"
   },
   "keywords": [],
   "author": "Artiom Astashonak",
   "license": "MIT",
-  "description": "",
+  "description": "A pseudo 3D racing game written in TypeScript",
   "devDependencies": {
     "@types/node": "^22.9.0",
     "ts-node": "^10.9.2",
